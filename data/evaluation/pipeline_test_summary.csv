@@ -1,0 +1,7 @@
+﻿variant,lineage,matched_variant,identification_correct,similarity_pct,mutation_count,key_mutation_recall,detected_mutations,cocktail_ic50_ug_ml,risk,elapsed_sec
+Alpha,B.1.1.7,Alpha,True,100.0,3,1.0,D614G; N501Y; P681H,0.0111,Potentially Effective,11.6
+Gamma,P.1,Gamma,True,100.0,5,1.0,D614G; N501Y; E484K; K417T; H655Y,0.0111,Potentially Effective,11.3
+Delta,B.1.617.2,Delta,True,100.0,6,1.0,D614G; L452R; T478K; P681R; T19R; G142D,0.0069,Potentially Effective,11.2
+Omicron,B.1.1.529 (early),Omicron,True,100.0,19,1.0,D614G; N501Y; K417N; T478K; P681H; H655Y; G339D; S371F; S373P; S375F; N440K; S477N; Q493R; Q498R; N679K; G142D; D796Y; Q954H; N969K,0.1783,High,11.3
+BA.4,BA.4,BA.4,True,100.0,3,1.0,D614G; N501Y; P681H,0.0111,Potentially Effective,11.6
+JN.1,JN.1,JN.1,True,100.0,23,1.0,D614G; N501Y; K417N; T478K; P681H; H655Y; S371F; S373P; S375F; N440K; G446S; S477N; Q498R; Y505H; N679K; R346T; N460K; F486P; L455F; F456L; D796Y; Q954H; N969K,1.2741,High,11.3

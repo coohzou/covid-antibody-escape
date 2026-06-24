@@ -1,0 +1,31 @@
+{
+  "description": "Train/test split for unbiased evaluation. ML test iso_names are held out of model training.",
+  "ml_test_iso_names": [
+    "BA.1 Spike",
+    "BQ.1.1 Spike",
+    "B.1.351 Spike",
+    "BA.2.75.2 Spike"
+  ],
+  "pipeline_test_variants": [
+    "Alpha",
+    "Gamma",
+    "Delta",
+    "JN.1",
+    "BA.4",
+    "Omicron"
+  ],
+  "notes": {
+    "ml_train_source": "data/training/processed_ml_features.csv",
+    "pipeline_test_purpose": "Variant identification and mutation detection only (no CoV-UniBind IC50 labels)",
+    "pipeline_train_overlap_variants": [
+      "Wild Type",
+      "Beta",
+      "BA.1",
+      "BA.2",
+      "BA.5",
+      "BA.2.75.2",
+      "BQ.1.1",
+      "XBB.1.5"
+    ]
+  }
+}

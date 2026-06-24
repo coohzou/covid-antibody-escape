@@ -1,0 +1,31 @@
+{
+  "source_rows": 83,
+  "train_rows": 65,
+  "test_rows": 18,
+  "train_iso_names": [
+    "B.1 Spike",
+    "B.1.640.2 Spike",
+    "BA.2 Spike",
+    "BA.2.12.1 Spike",
+    "BA.3 Spike",
+    "BA.4.6 Spike",
+    "BA.4/5 Spike",
+    "BJ.1 Spike",
+    "C.1.2 Spike:-144del-243del-244del-859N",
+    "C.1.2 Spike:25L+152R+478K+879T",
+    "S:19R+142D+156del+157del+158G+417N+452R+478K+614G+681R+950N",
+    "S:19R+142D+156del+157del+158G+452R+478K+614G+681R+950N",
+    "S:614G",
+    "S:95I+144S+145N+346K+484K+501Y+614G+681H+950N",
+    "Wuhan-Hu-1",
+    "XBB.1 Spike"
+  ],
+  "test_iso_names": [
+    "B.1.351 Spike",
+    "BA.1 Spike",
+    "BA.2.75.2 Spike",
+    "BQ.1.1 Spike"
+  ],
+  "train_path": "D:\\covid_website_project\\data\\training\\ml_train.csv",
+  "test_path": "D:\\covid_website_project\\data\\training\\ml_test.csv"
+}
