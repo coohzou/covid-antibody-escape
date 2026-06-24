@@ -146,4 +146,19 @@ class SequenceComparator:
         return self.variant_meta
 
 
-comparator = SequenceComparator()
+_comparator = None
+
+
+def get_comparator():
+    global _comparator
+    if _comparator is None:
+        _comparator = SequenceComparator()
+    return _comparator
+
+
+class _LazyComparatorProxy:
+    def __getattr__(self, name):
+        return getattr(get_comparator(), name)
+
+
+comparator = _LazyComparatorProxy()

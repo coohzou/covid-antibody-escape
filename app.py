@@ -22,7 +22,14 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-analyzer = SequenceAnalyzer()
+_analyzer = None
+
+
+def get_analyzer():
+    global _analyzer
+    if _analyzer is None:
+        _analyzer = SequenceAnalyzer()
+    return _analyzer
 
 
 def allowed_file(filename):
@@ -74,7 +81,7 @@ def upload_file():
 
     try:
         file.save(filename)
-        result = analyzer.analyze_sequence_file(filename)
+        result = get_analyzer().analyze_sequence_file(filename)
 
         if not isinstance(result, dict):
             return jsonify({"error": "Analyzer returned invalid data"}), 500
@@ -108,6 +115,13 @@ def upload_file():
 
 @app.route("/health")
 def health():
+    # Keep this endpoint lightweight so Render's 5s health check passes on cold start.
+    return jsonify({"status": "ok"}), 200
+
+
+@app.route("/ready")
+def ready():
+    analyzer = get_analyzer()
     return jsonify({
         "status": "ok",
         "predictor_ready": neutralization_predictor.ready,
