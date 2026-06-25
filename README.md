@@ -97,11 +97,3 @@ Outputs: `data/evaluation/ml_test_results.json`, `pipeline_test_results.json`
 Python 3.10+, see `requirements.txt`: Flask, Biopython, pandas, scikit-learn, joblib, numpy.
 
 ---
-
-## Sync Submission Pack
-
-```powershell
-.\.venv\Scripts\python.exe scripts\sync_submission_pack.py
-```
-
-Updates `D:\covid_website_summary` with latest evaluation results, docs, and Overleaf ZIP.
