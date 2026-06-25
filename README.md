@@ -8,6 +8,8 @@ Documentation pack: `D:\covid_website_summary`
 
 ## Quick Start
 
+First, download it (suppose in D:).
+
 ```powershell
 cd D:\covid_website_project
 .\.venv\Scripts\python.exe app.py
@@ -79,8 +81,6 @@ Outputs: `data/evaluation/ml_test_results.json`, `pipeline_test_results.json`
 | Gamma (P.1) | `data/prediction/gamma_complete.fasta` |
 | Delta | `data/prediction/delta_complete.fasta` |
 | JN.1 | `data/prediction/jn1_complete.fasta` |
-
-Do **not** use course `gamma_data.txt` (MZ477859.1) — it is near wild-type, not true P.1.
 
 ---
 
