@@ -29,11 +29,15 @@ def main() -> None:
     if not token:
         raise SystemExit("Set HF_TOKEN to a Hugging Face write token.")
 
-    username = os.environ.get("HF_USERNAME", "coohzou")
+    api = HfApi(token=token)
+    whoami = api.whoami()
+    username = os.environ.get("HF_USERNAME") or whoami.get("name") or whoami.get("fullname")
+    if not username:
+        raise SystemExit("Could not determine Hugging Face username from HF_TOKEN.")
+
     space_id = os.environ.get("HF_SPACE", "covid-antibody-escape")
     repo_id = f"{username}/{space_id}"
-
-    api = HfApi(token=token)
+    print(f"Deploying Space: {repo_id}")
     create_repo(
         repo_id,
         repo_type="space",

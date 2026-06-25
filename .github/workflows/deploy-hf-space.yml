@@ -19,6 +19,5 @@ jobs:
       - name: Upload to HF Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HF_USERNAME: coohzou
           HF_SPACE: covid-antibody-escape
         run: python scripts/deploy_hf_space.py
