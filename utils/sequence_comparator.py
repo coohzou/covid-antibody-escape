@@ -74,6 +74,7 @@ class SequenceComparator:
                 records = list(SeqIO.parse(path, "fasta"))
                 if records:
                     full_seq = str(records[0].seq).upper()
+                    self.references[name] = full_seq
                     self.spike_references[name] = self._extract_spike_region(full_seq)
                     self.variant_meta[name] = {
                         "lineage": item.get("lineage", name),
@@ -139,25 +140,10 @@ class SequenceComparator:
         return False, best_similarity, best_variant, f"Not SARS-CoV-2 ({best_similarity}%)"
 
     def get_all_references(self):
-        return self.spike_references
+        return self.references
 
     def get_variant_meta(self):
         return self.variant_meta
 
 
-_comparator = None
-
-
-def get_comparator():
-    global _comparator
-    if _comparator is None:
-        _comparator = SequenceComparator()
-    return _comparator
-
-
-class _LazyComparatorProxy:
-    def __getattr__(self, name):
-        return getattr(get_comparator(), name)
-
-
-comparator = _LazyComparatorProxy()
+comparator = SequenceComparator()

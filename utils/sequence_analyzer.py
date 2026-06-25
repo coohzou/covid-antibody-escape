@@ -119,15 +119,15 @@ class SequenceAnalyzer:
         return round(((seq.count('G') + seq.count('C')) / len(seq)) * 100, 2) if seq else 0
 
     def _find_best_reference_match(self, query_seq):
-        spike_refs = comparator.spike_references
-        if not spike_refs:
+        references = comparator.get_all_references()
+        if not references:
             return None
 
         best_similarity = 0.0
         best_variant = None
 
-        for variant_name, ref_spike in spike_refs.items():
-            similarity = comparator.calculate_identity(query_seq, ref_spike)
+        for variant_name, ref_seq in references.items():
+            similarity = comparator.calculate_identity(query_seq, ref_seq)
             if similarity > best_similarity:
                 best_similarity = similarity
                 best_variant = variant_name
@@ -141,16 +141,6 @@ class SequenceAnalyzer:
     def _extract_query_spike_nt(self, query_genome):
         if not self.reference_genome:
             return None
-
-        query_genome = query_genome.replace("-", "").upper()
-
-        if len(query_genome) >= self.SPIKE_END:
-            ref_len = len(self.reference_genome)
-            if abs(len(query_genome) - ref_len) <= max(1000, int(ref_len * 0.05)):
-                spike_nt = query_genome[self.SPIKE_START - 1:self.SPIKE_END]
-                if len(spike_nt) >= 3000:
-                    return spike_nt
-
         try:
             alignment = self.global_aligner.align(self.reference_genome, query_genome)[0]
         except Exception:
