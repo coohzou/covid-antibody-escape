@@ -2,8 +2,6 @@
 
 Flask web application for SARS-CoV-2 variant identification, spike mutation detection, and Casirivimab/Imdevimab cocktail neutralization (IC50) prediction.
 
-Documentation pack: `D:\covid_website_summary`
-
 ---
 
 ## Quick Start
@@ -40,16 +38,16 @@ covid_website_project/
 │   ├── prediction/                 # Reference genomes for web runtime
 │   └── evaluation/                 # Held-out test config & results
 ├── scripts/
-│   ├── run_evaluation.py           # One-click test reproduction
-│   ├── split_ml_dataset.py
-│   ├── train_neutralization_model.py
-│   ├── evaluate_ml_test_set.py
-│   ├── evaluate_pipeline_test_set.py
-│   ├── batch_test_variants.py      # Internal regression only
-│   ├── download_variants.py
-│   ├── build_ml_features.py        # Rebuild feature matrix (optional)
-│   └── sync_submission_pack.py     # Sync summary folder for hand-in
-└── overleaf/                       # Final report LaTeX source
+    ├── run_evaluation.py           # One-click test reproduction
+    ├── split_ml_dataset.py
+    ├── train_neutralization_model.py
+    ├── evaluate_ml_test_set.py
+    ├── evaluate_pipeline_test_set.py
+    ├── batch_test_variants.py      # Internal regression only
+    ├── download_variants.py
+    ├── build_ml_features.py        # Rebuild feature matrix (optional)
+    └── sync_submission_pack.py     # Sync summary folder for hand-in
+
 ```
 
 See **`data/README.md`** for the train vs prediction vs evaluation split.
