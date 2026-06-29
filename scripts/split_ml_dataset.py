@@ -50,8 +50,8 @@ def main():
         "test_rows": len(test_df),
         "train_iso_names": sorted(train_df["iso_name"].unique().tolist()),
         "test_iso_names": sorted(test_df["iso_name"].unique().tolist()),
-        "train_path": ML_TRAIN_CSV,
-        "test_path": ML_TEST_CSV,
+        "train_path": os.path.relpath(ML_TRAIN_CSV, PROJECT_ROOT),
+        "test_path": os.path.relpath(ML_TEST_CSV, PROJECT_ROOT),
     }
     with open(META_OUT, "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)

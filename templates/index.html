@@ -117,6 +117,9 @@
         <div class="header">
             <h1>SARS-CoV-2 Antibody Escape Predictor</h1>
             <p>Upload sequence to predict IC50 and antibody escape risk</p>
+            <p style="font-size: 0.85em; margin-top: 8px; opacity: 0.9;">
+                Research and teaching tool only. Not for clinical decision-making.
+            </p>
         </div>
 
         <div class="card">
@@ -142,6 +145,7 @@
     <h3 style="margin-bottom: 20px;">Antibody Escape Prediction</h3>
 
     <div id="validationBadge"></div>
+    <div id="analysisWarning" style="display: none; background: #fffaf0; padding: 10px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #d69e2e;"></div>
 
     <div class="result-grid">
         <div class="result-item">
@@ -153,7 +157,7 @@
             <div class="result-value" id="gcContent">-</div>
         </div>
         <div class="result-item">
-            <div class="result-label">Predicted IC50</div>
+            <div class="result-label">Cocktail IC50 (min)</div>
             <div class="result-value" id="ic50Value">-</div>
         </div>
         <div class="result-item">
@@ -178,9 +182,10 @@
     </div>
 
     <div style="margin-top: 15px; font-size: 0.8em; color: #718096; text-align: center;">
-        Data source: CoV-UniBind | Research tool only
+        Detects predefined spike mutations only (not a full-protein scan).
     </div>
 </div>
+        </div>
 
         <div class="footer">
             <p>Based on CoV-UniBind dataset | Reference: Wuhan-Hu-1 (NC_045512)</p>
@@ -234,10 +239,14 @@
             if (!(data instanceof FormData)) options.headers['Content-Type'] = 'application/json';
 
             fetch(url, options)
-                .then(res => res.json())
-                .then(data => {
+                .then(async res => {
+                    const data = await res.json().catch(() => ({}));
                     document.getElementById('loading').style.display = 'none';
                     document.querySelectorAll('.btn').forEach(btn => btn.disabled = false);
+                    if (!res.ok) {
+                        showError(data.error || `Request failed (${res.status})`);
+                        return;
+                    }
                     if (data.error) showError(data.error);
                     else displayResults(data);
                 })
@@ -315,6 +324,15 @@
     }
 
     document.getElementById('result').style.display = 'block';
+
+    const warningEl = document.getElementById('analysisWarning');
+    if (data.warning) {
+        warningEl.textContent = data.warning;
+        warningEl.style.display = 'block';
+    } else {
+        warningEl.textContent = '';
+        warningEl.style.display = 'none';
+    }
 }
 
         function showError(msg) {

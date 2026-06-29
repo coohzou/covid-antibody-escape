@@ -91,8 +91,8 @@ def main():
 
     result = {
         "description": "Held-out ML test evaluation (iso_names excluded from training)",
-        "test_file": TEST_PATH,
-        "model_dir": MODEL_DIR,
+        "test_file": os.path.relpath(TEST_PATH, PROJECT_ROOT),
+        "model_dir": os.path.relpath(MODEL_DIR, PROJECT_ROOT),
         "per_antibody": summary_by_ab,
         "overall": {"n": len(rows_out), **metrics(overall_true, overall_pred)},
         "predictions": rows_out,

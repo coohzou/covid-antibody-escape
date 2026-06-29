@@ -100,7 +100,8 @@ class SequenceAnalyzer:
     def _load_reference_genome(self):
         if os.path.exists(self.ref_path):
             try:
-                rec = next(SeqIO.parse(self.ref_path, "fasta"))
+                with open(self.ref_path, encoding="utf-8") as handle:
+                    rec = next(SeqIO.parse(handle, "fasta"))
                 return str(rec.seq).upper()
             except Exception as exc:
                 logger.error("Failed to load reference genome: %s", exc)
@@ -118,23 +119,22 @@ class SequenceAnalyzer:
         seq = sequence.upper()
         return round(((seq.count('G') + seq.count('C')) / len(seq)) * 100, 2) if seq else 0
 
+    @staticmethod
+    def _is_valid_sequence(sequence):
+        if len(sequence) < 1000:
+            return False
+        allowed = set("ACGTUN-")
+        invalid = sum(1 for base in sequence if base not in allowed)
+        return (invalid / len(sequence)) <= 0.05
+
     def _find_best_reference_match(self, query_seq):
-        references = comparator.get_all_references()
-        if not references:
+        if not comparator.spike_references:
             return None
 
-        best_similarity = 0.0
-        best_variant = None
-
-        for variant_name, ref_seq in references.items():
-            similarity = comparator.calculate_identity(query_seq, ref_seq)
-            if similarity > best_similarity:
-                best_similarity = similarity
-                best_variant = variant_name
-
+        is_covid, similarity, best_variant, _message = comparator.is_sars_cov2(query_seq)
         return {
-            'is_covid': best_similarity >= 70,
-            'similarity': best_similarity,
+            'is_covid': is_covid,
+            'similarity': similarity,
             'variant_name': best_variant,
         }
 
@@ -293,7 +293,15 @@ class SequenceAnalyzer:
             result['error'] = "Cannot read file"
             return result
 
+        if len(records) > 1:
+            result['warning'] = (
+                f"Multiple sequences found; analyzed first record only ({records[0].id or 'record 1'})"
+            )
+
         dna_seq = str(records[0].seq).upper()
+        if not self._is_valid_sequence(dna_seq):
+            result['error'] = "Invalid sequence content (expected DNA: A/C/G/T/N)"
+            return result
 
         result['details'] = {
             'sequence_length': len(dna_seq),

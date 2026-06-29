@@ -15,6 +15,13 @@ cd D:\covid_website_project
 
 Open http://127.0.0.1:5000 — upload a `.fasta` file and click **Predict Antibody Escape**.
 
+Trained Ridge models are included under `data/training/models/`. If prediction returns
+`predictor_ready=false`, run:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\train_neutralization_model.py
+```
+
 Restart Flask after code or model changes.
 
 ---
@@ -88,7 +95,14 @@ Outputs: `data/evaluation/ml_test_results.json`, `pipeline_test_results.json`
 |-------|--------|-------------|
 | `/` | GET | Main page |
 | `/upload` | POST | Upload FASTA, returns JSON analysis |
-| `/health` | GET | Service status + model readiness |
+| `/health` | GET | Lightweight liveness check |
+| `/ready` | GET | Model and reference readiness |
+
+Run tests:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"
+```
 
 ---
 

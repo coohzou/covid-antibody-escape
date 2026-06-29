@@ -20,7 +20,7 @@ SPIKE_END = 25384
 
 class SequenceComparator:
     def __init__(self):
-        self.covid_threshold = 0.95
+        self.covid_threshold = 0.70
         self.references = {}
         self.spike_references = {}
         self.variant_meta = {}
@@ -135,8 +135,6 @@ class SequenceComparator:
 
         if best_similarity >= self.covid_threshold * 100:
             return True, best_similarity, best_variant, f"Confirmed SARS-CoV-2 ({best_variant}, {best_similarity}%)"
-        if best_similarity >= 70:
-            return False, best_similarity, best_variant, f"Possible coronavirus ({best_variant}, {best_similarity}%)"
         return False, best_similarity, best_variant, f"Not SARS-CoV-2 ({best_similarity}%)"
 
     def get_all_references(self):

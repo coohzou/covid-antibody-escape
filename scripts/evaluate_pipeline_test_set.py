@@ -27,7 +27,7 @@ EXPECTED_MUTATIONS = {
     "Gamma": {"D614G", "N501Y", "E484K", "K417T", "H655Y"},
     "Delta": {"D614G", "L452R", "T478K", "P681R"},
     "Omicron": {"D614G", "N501Y", "K417N", "P681H"},
-    "BA.4": {"D614G", "N501Y", "P681H"},
+    "BA.4": {"D614G", "N501Y", "K417N", "L452R", "F486V", "P681H"},
     "JN.1": {"D614G", "N501Y", "K417N", "R346T"},
 }
 

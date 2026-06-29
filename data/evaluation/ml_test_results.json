@@ -1,7 +1,7 @@
 {
   "description": "Held-out ML test evaluation (iso_names excluded from training)",
-  "test_file": "D:\\covid_website_project\\data\\training\\ml_test.csv",
-  "model_dir": "D:\\covid_website_project\\data\\training\\models",
+  "test_file": "data\\training\\ml_test.csv",
+  "model_dir": "data\\training\\models",
   "per_antibody": {
     "Casirivimab": {
       "n": 6,

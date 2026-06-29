@@ -1,7 +1,8 @@
 import logging
 import os
-import traceback
+import time
 import uuid
+from collections import defaultdict
 
 from flask import Flask, jsonify, render_template, request
 from werkzeug.utils import secure_filename
@@ -16,6 +17,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
 ALLOWED_EXTENSIONS = {"fasta", "fa", "txt", "seq"}
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB
+UPLOAD_RATE_LIMIT = int(os.environ.get("UPLOAD_RATE_LIMIT", "20"))
+UPLOAD_RATE_WINDOW_SEC = int(os.environ.get("UPLOAD_RATE_WINDOW_SEC", "60"))
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -23,6 +26,7 @@ app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 _analyzer = None
+_upload_timestamps = defaultdict(list)
 
 
 def get_analyzer():
@@ -36,11 +40,28 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+def client_ip():
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.remote_addr or "unknown"
+
+
+def rate_limit_ok(ip_address):
+    now = time.time()
+    recent = [stamp for stamp in _upload_timestamps[ip_address] if now - stamp < UPLOAD_RATE_WINDOW_SEC]
+    _upload_timestamps[ip_address] = recent
+    if len(recent) >= UPLOAD_RATE_LIMIT:
+        return False
+    _upload_timestamps[ip_address].append(now)
+    return True
+
+
 def build_response(result, detected_mutations):
     raw_prediction = neutralization_predictor.predict_variant_neutralization(detected_mutations)
     details = result.get("details", {})
 
-    return {
+    payload = {
         "success": True,
         "similarity_score": float(result.get("similarity_score", 100)),
         "sequence_info": {
@@ -57,6 +78,9 @@ def build_response(result, detected_mutations):
         },
         "neutralization_results": raw_prediction,
     }
+    if result.get("warning"):
+        payload["warning"] = result["warning"]
+    return payload
 
 
 @app.route("/")
@@ -66,6 +90,9 @@ def index():
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
+    if not rate_limit_ok(client_ip()):
+        return jsonify({"error": "Too many upload requests. Please wait and try again."}), 429
+
     if "file" not in request.files:
         return jsonify({"error": "No file selected"}), 400
 
@@ -104,9 +131,9 @@ def upload_file():
         logger.info("Detected mutations: %s", detected_mutations)
         return jsonify(build_response(result, detected_mutations))
 
-    except Exception as exc:
+    except Exception:
         logger.exception("Upload analysis failed")
-        return jsonify({"error": str(exc)}), 500
+        return jsonify({"error": "Analysis failed. Please check your FASTA file and try again."}), 500
 
     finally:
         if os.path.exists(filename):
@@ -115,7 +142,6 @@ def upload_file():
 
 @app.route("/health")
 def health():
-    # Keep this endpoint lightweight so Render's 5s health check passes on cold start.
     return jsonify({"status": "ok"}), 200
 
 
@@ -130,4 +156,5 @@ def ready():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    debug_mode = os.environ.get("FLASK_DEBUG", "").lower() in {"1", "true", "yes"}
+    app.run(host="127.0.0.1", port=5000, debug=debug_mode)
